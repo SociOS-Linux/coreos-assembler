@@ -24,8 +24,12 @@ import (
 	fcos1_3 "github.com/coreos/butane/config/fcos/v1_3"
 	fcos1_4 "github.com/coreos/butane/config/fcos/v1_4"
 	fcos1_5_exp "github.com/coreos/butane/config/fcos/v1_5_exp"
+	flatcar1_0 "github.com/coreos/butane/config/flatcar/v1_0"
+	flatcar1_1_exp "github.com/coreos/butane/config/flatcar/v1_1_exp"
 	openshift4_10 "github.com/coreos/butane/config/openshift/v4_10"
-	openshift4_11_exp "github.com/coreos/butane/config/openshift/v4_11_exp"
+	openshift4_11 "github.com/coreos/butane/config/openshift/v4_11"
+	openshift4_12 "github.com/coreos/butane/config/openshift/v4_12"
+	openshift4_13_exp "github.com/coreos/butane/config/openshift/v4_13_exp"
 	openshift4_8 "github.com/coreos/butane/config/openshift/v4_8"
 	openshift4_9 "github.com/coreos/butane/config/openshift/v4_9"
 	rhcos0_1 "github.com/coreos/butane/config/rhcos/v0_1"
@@ -39,7 +43,7 @@ var (
 	registry = map[string]translator{}
 )
 
-/// Fields that must be included in the root struct of every spec version.
+// Fields that must be included in the root struct of every spec version.
 type commonFields struct {
 	Version string `yaml:"version"`
 	Variant string `yaml:"variant"`
@@ -52,16 +56,20 @@ func init() {
 	RegisterTranslator("fcos", "1.3.0", fcos1_3.ToIgn3_2Bytes)
 	RegisterTranslator("fcos", "1.4.0", fcos1_4.ToIgn3_3Bytes)
 	RegisterTranslator("fcos", "1.5.0-experimental", fcos1_5_exp.ToIgn3_4Bytes)
+	RegisterTranslator("flatcar", "1.0.0", flatcar1_0.ToIgn3_3Bytes)
+	RegisterTranslator("flatcar", "1.1.0-experimental", flatcar1_1_exp.ToIgn3_4Bytes)
 	RegisterTranslator("openshift", "4.8.0", openshift4_8.ToConfigBytes)
 	RegisterTranslator("openshift", "4.9.0", openshift4_9.ToConfigBytes)
 	RegisterTranslator("openshift", "4.10.0", openshift4_10.ToConfigBytes)
-	RegisterTranslator("openshift", "4.11.0-experimental", openshift4_11_exp.ToConfigBytes)
+	RegisterTranslator("openshift", "4.11.0", openshift4_11.ToConfigBytes)
+	RegisterTranslator("openshift", "4.12.0", openshift4_12.ToConfigBytes)
+	RegisterTranslator("openshift", "4.13.0-experimental", openshift4_13_exp.ToConfigBytes)
 	RegisterTranslator("rhcos", "0.1.0", rhcos0_1.ToIgn3_2Bytes)
 }
 
-/// RegisterTranslator registers a translator for the specified variant and
-/// version to be available for use by TranslateBytes.  This is only needed
-/// by users implementing their own translators outside the Butane package.
+// RegisterTranslator registers a translator for the specified variant and
+// version to be available for use by TranslateBytes.  This is only needed
+// by users implementing their own translators outside the Butane package.
 func RegisterTranslator(variant, version string, trans translator) {
 	key := fmt.Sprintf("%s+%s", variant, version)
 	if _, ok := registry[key]; ok {
